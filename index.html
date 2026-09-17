@@ -48,6 +48,16 @@ body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right
 .play{width:62px;height:62px;border:1px solid rgba(255,255,255,.16);border-radius:50%;color:#1c1308;background:var(--accent);cursor:pointer;box-shadow:0 12px 26px rgba(216,168,91,.18);transition:transform .18s ease}
 .play:active{transform:scale(.96)} .play span{font-size:19px;display:block;transform:translateX(2px)} body.playing .play span{transform:none}
 .volume-wrap{display:flex;align-items:center;gap:10px;width:min(220px,74%);opacity:.74}.volume-icon{font-size:10px;color:var(--muted)}#volume{width:100%;accent-color:var(--accent);height:3px}
+
+.timer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px}
+.timer-btn{border:0;background:transparent;color:var(--muted);font-size:12px;letter-spacing:.08em;padding:4px 8px;cursor:pointer;opacity:.72}
+.timer-btn.active{color:var(--accent);opacity:1}
+.timer-menu{display:none;grid-template-columns:repeat(3,minmax(58px,1fr));gap:8px;width:min(260px,86%);padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(8,8,16,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.timer-menu.open{display:grid}
+.timer-option{border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.035);color:var(--text);font-size:11px;padding:8px 5px;cursor:pointer}
+.timer-option.active{border-color:var(--accent);color:var(--accent)}
+.timer-status{min-height:15px;color:var(--muted);font-size:10px;letter-spacing:.06em}
+
 .fade{animation:softfade .45s ease}@keyframes softfade{0%{opacity:.28;transform:translateY(4px)}100%{opacity:1;transform:none}}
 @media(max-width:560px){
   .stage{width:min(100% - 20px,520px);padding-top:24px;justify-content:flex-start}
@@ -58,7 +68,7 @@ body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right
   .meta strong{font-size:18px}.controls{margin-top:16px}.play{width:58px;height:58px}
 }
   </style>
-  <meta name="youth-fades-build" content="standalone-20260917-0950">
+  <meta name="youth-fades-build" content="standalone-20260917-timer-1">
 </head>
 <body>
   <div class="bg" id="bg"></div>
@@ -108,6 +118,19 @@ body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right
           <span class="volume-icon">◉</span>
           <input id="volume" type="range" min="0" max="1" step="0.01" value="0.72" aria-label="音量">
         </div>
+        <div class="timer-wrap">
+          <button id="timerBtn" class="timer-btn" type="button" aria-expanded="false">◷ 定时</button>
+          <div id="timerMenu" class="timer-menu" aria-label="睡眠定时">
+            <button class="timer-option" data-minutes="15" type="button">15 分</button>
+            <button class="timer-option" data-minutes="30" type="button">30 分</button>
+            <button class="timer-option" data-minutes="45" type="button">45 分</button>
+            <button class="timer-option" data-minutes="60" type="button">60 分</button>
+            <button class="timer-option" data-minutes="90" type="button">90 分</button>
+            <button class="timer-option" data-minutes="0" type="button">关闭</button>
+          </div>
+          <div id="timerStatus" class="timer-status"></div>
+        </div>
+
       </div>
     </section>
   </main>
@@ -120,6 +143,11 @@ body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right
   const playBtn=document.getElementById("playBtn");
   const playIcon=playBtn.querySelector(".play-icon");
   const volume=document.getElementById("volume");
+  const timerBtn=document.getElementById("timerBtn");
+  const timerMenu=document.getElementById("timerMenu");
+  const timerStatus=document.getElementById("timerStatus");
+  const timerOptions=[...document.querySelectorAll(".timer-option")];
+  let sleepDeadline=0,sleepTicker=null;
   const bg=document.getElementById("bg");
   const cover=document.getElementById("cover");
   const title=document.getElementById("title");
@@ -155,6 +183,43 @@ body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right
   async function next(auto=false){render(choose());if(auto&&current.audio){try{await audio.play()}catch(_){setPlaying(false)}}}
   playBtn.addEventListener("click",async()=>{if(!current)await next(false);if(!current.audio){setPlaying(true);setTimeout(()=>setPlaying(false),700);return}if(audio.paused){try{await audio.play();started=true}catch(_){setPlaying(false)}}else audio.pause()});
   volume.addEventListener("input",()=>audio.volume=Number(volume.value));
+  function clearSleepTimer(){
+    sleepDeadline=0;
+    if(sleepTicker){clearInterval(sleepTicker);sleepTicker=null}
+    timerStatus.textContent="";
+    timerBtn.classList.remove("active");
+    timerOptions.forEach(b=>b.classList.remove("active"));
+  }
+  function renderSleepTimer(){
+    if(!sleepDeadline)return;
+    const left=Math.max(0,sleepDeadline-Date.now());
+    if(left<=0){
+      audio.pause();
+      clearSleepTimer();
+      return;
+    }
+    const total=Math.ceil(left/60000);
+    timerStatus.textContent=`${total} 分钟后暂停`;
+  }
+  function setSleepTimer(minutes){
+    clearSleepTimer();
+    if(!minutes)return;
+    sleepDeadline=Date.now()+minutes*60000;
+    timerBtn.classList.add("active");
+    timerOptions.find(b=>Number(b.dataset.minutes)===minutes)?.classList.add("active");
+    renderSleepTimer();
+    sleepTicker=setInterval(renderSleepTimer,15000);
+  }
+  timerBtn.addEventListener("click",()=>{
+    const open=timerMenu.classList.toggle("open");
+    timerBtn.setAttribute("aria-expanded",String(open));
+  });
+  timerOptions.forEach(btn=>btn.addEventListener("click",()=>{
+    setSleepTimer(Number(btn.dataset.minutes));
+    timerMenu.classList.remove("open");
+    timerBtn.setAttribute("aria-expanded","false");
+  }));
+
   audio.addEventListener("playing",()=>setPlaying(true));audio.addEventListener("pause",()=>setPlaying(false));
   audio.addEventListener("ended",async()=>{setPlaying(false);await new Promise(r=>setTimeout(r,850));await next(started)});
   audio.addEventListener("error",async()=>{setPlaying(false);await new Promise(r=>setTimeout(r,500));await next(started)});
