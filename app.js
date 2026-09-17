@@ -41,5 +41,5 @@
   audio.addEventListener("playing",()=>setPlaying(true));audio.addEventListener("pause",()=>setPlaying(false));
   audio.addEventListener("ended",async()=>{setPlaying(false);await new Promise(r=>setTimeout(r,850));await next(started)});
   audio.addEventListener("error",async()=>{setPlaying(false);await new Promise(r=>setTimeout(r,500));await next(started)});
-  (async()=>{audio.volume=Number(volume.value);try{const r=await fetch("tracks.json",{cache:"no-store"});const d=await r.json();tracks=Array.isArray(d.tracks)&&d.tracks.length?d.tracks:fallback}catch(_){tracks=fallback}await next(false)})();
+  (async()=>{audio.volume=Number(volume.value);try{const r=await fetch("/youth-fades-radio/tracks.json",{cache:"no-store"});const d=await r.json();tracks=Array.isArray(d.tracks)&&d.tracks.length?d.tracks:fallback}catch(_){tracks=fallback}await next(false)})();
 })();
