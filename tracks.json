@@ -1,0 +1,43 @@
+{
+  "tracks": [
+    {
+      "id": "demo-01",
+      "title": "夏夜片段",
+      "artist": "Demo Tape",
+      "audio": "",
+      "image": "",
+      "theme": {
+        "accent": "#d8a85b",
+        "label": "#d8cfb6",
+        "ink": "#24201a",
+        "shell": "#56535d"
+      }
+    },
+    {
+      "id": "demo-02",
+      "title": "雨后街道",
+      "artist": "Demo Tape",
+      "audio": "",
+      "image": "",
+      "theme": {
+        "accent": "#8fb4c9",
+        "label": "#c8d4d8",
+        "ink": "#172027",
+        "shell": "#46535d"
+      }
+    },
+    {
+      "id": "demo-03",
+      "title": "旧校服",
+      "artist": "Demo Tape",
+      "audio": "",
+      "image": "",
+      "theme": {
+        "accent": "#b57672",
+        "label": "#d7b9a9",
+        "ink": "#2d1a18",
+        "shell": "#5b4b4c"
+      }
+    }
+  ]
+}
