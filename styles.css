@@ -1,0 +1,50 @@
+:root{
+  --bg:#0b0b14;--text:#f4efe6;--muted:#a9a2ae;--accent:#d8a85b;
+  --label:#d6c8aa;--ink:#24201a;--shell:#5b5760;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+body{min-height:100dvh;overflow-x:hidden}
+button,input{font:inherit}
+.bg,.veil{position:fixed;inset:0;pointer-events:none}
+.bg{z-index:-3;background:radial-gradient(circle at 20% 20%,rgba(216,168,91,.18),transparent 34%),linear-gradient(135deg,#151525,#090912);background-size:cover;background-position:center;filter:blur(26px) saturate(.9);transform:scale(1.08);transition:background-image .7s ease,opacity .7s ease}
+.veil{z-index:-2;background:linear-gradient(180deg,rgba(8,8,17,.58),rgba(8,8,17,.82) 68%,rgba(8,8,17,.94))}
+.stage{min-height:100dvh;width:min(760px,calc(100% - 32px));margin:0 auto;padding:40px 0 max(38px,env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:center}
+.brand{text-align:center;margin-bottom:26px}
+.brand .eyebrow{font-size:10px;letter-spacing:.22em;color:var(--accent);font-weight:700}
+.brand h1{margin:9px 0 6px;font-family:Georgia,"Songti SC",serif;font-size:clamp(32px,6vw,54px);font-weight:500;letter-spacing:.04em}
+.brand p{margin:0;color:#ddd6cb;font-size:13px;letter-spacing:.08em}
+.brand span{display:block;margin-top:8px;color:var(--muted);font-size:11px}
+.memory-card{width:min(520px,100%);margin:0 auto;padding:18px 18px 22px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:rgba(20,20,34,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.34)}
+.memory-photo{margin:0 0 18px;aspect-ratio:16/9;overflow:hidden;border-radius:14px;background:linear-gradient(135deg,#302c34,#171720)}
+.memory-photo img{width:100%;height:100%;object-fit:cover;display:block;opacity:.94;transition:opacity .45s ease,transform 5s ease}
+body.playing .memory-photo img{transform:scale(1.025)}
+.cassette{margin:0 auto 18px;width:min(420px,100%)}
+.cassette-shell{position:relative;aspect-ratio:1.7/1;border-radius:14px;padding:16px;background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.02)),var(--shell);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 0 0 3px rgba(255,255,255,.03),0 18px 40px rgba(0,0,0,.32);transition:background .45s ease}
+.cassette-label{height:100%;padding:14px 16px 12px;border-radius:10px;background:var(--label);color:var(--ink);box-shadow:inset 0 -10px 22px rgba(0,0,0,.06);transition:background .45s ease,color .45s ease}
+.label-top,.label-bottom{font:700 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;opacity:.68}
+.label-title{margin-top:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:700 clamp(18px,5vw,26px)/1.1 Georgia,"Songti SC",serif}
+.label-artist{margin-top:4px;font-size:11px;opacity:.72}
+.reel-window{margin:14px 0 12px;height:68px;display:grid;grid-template-columns:68px 1fr 68px;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(24,22,24,.78);border:2px solid rgba(255,255,255,.42);box-shadow:inset 0 4px 14px rgba(0,0,0,.48)}
+.reel{position:relative;width:52px;height:52px;border-radius:50%;margin:auto;background:radial-gradient(circle,#1b1a1b 0 18%,#d9d5cb 19% 28%,#3c3a3d 29% 48%,#111 49% 100%);box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+.reel i{position:absolute;left:50%;top:50%;width:5px;height:17px;background:#d7d2c9;border-radius:2px;transform-origin:50% 0}
+.reel i:nth-child(1){transform:translate(-50%,-3px) rotate(0deg)} .reel i:nth-child(2){transform:translate(-50%,-3px) rotate(90deg)} .reel i:nth-child(3){transform:translate(-50%,-3px) rotate(180deg)} .reel i:nth-child(4){transform:translate(-50%,-3px) rotate(270deg)}
+body.playing .reel{animation:spin 2.8s linear infinite} body.playing .reel.right{animation-duration:2.45s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tape-line{height:4px;border-radius:999px;background:linear-gradient(90deg,#40261d,#875c45,#40261d);box-shadow:0 0 0 1px rgba(0,0,0,.38)}
+.cassette-screws b{position:absolute;width:7px;height:7px;border-radius:50%;background:#1b1b20;border:1px solid #999;box-shadow:inset 0 0 0 1px #333}
+.cassette-screws b:nth-child(1){left:8px;top:8px}.cassette-screws b:nth-child(2){right:8px;top:8px}.cassette-screws b:nth-child(3){left:8px;bottom:8px}.cassette-screws b:nth-child(4){right:8px;bottom:8px}
+.meta{text-align:center;margin-top:4px}.meta strong{display:block;font-family:Georgia,"Songti SC",serif;font-size:20px;font-weight:500}.meta span{display:block;margin-top:5px;color:var(--muted);font-size:11px}
+.controls{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.play{width:62px;height:62px;border:1px solid rgba(255,255,255,.16);border-radius:50%;color:#1c1308;background:var(--accent);cursor:pointer;box-shadow:0 12px 26px rgba(216,168,91,.18);transition:transform .18s ease}
+.play:active{transform:scale(.96)} .play span{font-size:19px;display:block;transform:translateX(2px)} body.playing .play span{transform:none}
+.volume-wrap{display:flex;align-items:center;gap:10px;width:min(220px,74%);opacity:.74}.volume-icon{font-size:10px;color:var(--muted)}#volume{width:100%;accent-color:var(--accent);height:3px}
+.fade{animation:softfade .45s ease}@keyframes softfade{0%{opacity:.28;transform:translateY(4px)}100%{opacity:1;transform:none}}
+@media(max-width:560px){
+  .stage{width:min(100% - 20px,520px);padding-top:24px;justify-content:flex-start}
+  .brand{margin-bottom:18px}.brand h1{font-size:34px}.brand span{font-size:10px}
+  .memory-card{padding:12px 12px 18px;border-radius:18px}.memory-photo{margin-bottom:14px;border-radius:12px}
+  .cassette{margin-bottom:14px}.cassette-shell{padding:11px}.cassette-label{padding:11px 12px}
+  .reel-window{height:56px;grid-template-columns:54px 1fr 54px;margin:10px 0}.reel{width:42px;height:42px}
+  .meta strong{font-size:18px}.controls{margin-top:16px}.play{width:58px;height:58px}
+}
